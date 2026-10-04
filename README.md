@@ -25,6 +25,16 @@ solver, graph worker, retry engine, persistence layer, or transport implementati
 - `Predicate`, `Effect`, and `Operation` describe permitted invocation and the
   joint transformation of affected attributes. Effect outputs are mathematical
   post-state, not return values that an executing vertex must send to a caller.
+- `Surface` is the shared borrowing interface for enumerating an appliance's
+  states, transformations, axioms, and invariants. Vertex implementations project
+  their existing handles; nucleus can implement it over received definitions.
+  Consumers see the same mathematical records without depending on the RTOS.
+
+Surface axioms describe supplied facts/assumptions. Invariants describe properties
+that admitted transitions must preserve; they are distinct from individual
+operation preconditions. Both use ordinary argument-free Boolean predicates with
+direct state inputs. The interface introduces no registry, copied definition
+table, native execution, or fixed storage layout. Locations remain consumer-owned.
 
 The [relay example](examples/relay.rs) declares a complete operation as static
 data, referring to actual firmware storage. Firmware connects its hardware

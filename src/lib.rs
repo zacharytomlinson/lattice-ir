@@ -21,4 +21,4 @@ mod surface;
 
 pub use expression::{Definition, Expr};
 pub use scalar::{Binary, Error, Integer, Type, Unary, Value};
-pub use surface::{Attribute, Effect, Operation, Predicate};
+pub use surface::{Attribute, Effect, Operation, Predicate, Surface};

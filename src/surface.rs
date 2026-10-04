@@ -62,3 +62,36 @@ pub struct Operation<'e, 'a, Location> {
     /// Joint transformation of the operation's affected state.
     pub effect: Effect<'e, 'a, Location>,
 }
+
+/// Borrow the mathematical surface of one appliance.
+///
+/// A vertex can project its native handles through this interface; nucleus can
+/// implement it over definitions it owns or has received. Consumers depend only
+/// on the IR and the opaque location representation chosen by the implementation.
+/// No native reader or state transformer is invoked by this interface.
+///
+/// Iterators expose the original definitions and their direct relationships. An
+/// implementation need not allocate another collection, copy state, or assign IDs.
+/// Distinct callable bindings retain distinct operation roots even when their
+/// expression bodies are shared, so the consumer can refer to the chosen binding.
+/// The view describes semantic roots, not a wire format or an installed program.
+pub trait Surface {
+    /// Correspondence to state in the consumer's own reference domain.
+    type Location;
+
+    /// Exposed states, retaining their original mathematical definitions.
+    fn states(&self) -> impl Iterator<Item = &Attribute<Self::Location>>;
+
+    /// Exposed transformations, including preconditions and coupled effects.
+    fn transformers(&self) -> impl Iterator<Item = &Operation<'_, '_, Self::Location>>;
+
+    /// Device-model facts supplied as assumptions of the admitted state domain.
+    /// These are argument-free Boolean predicates over their declared state inputs.
+    fn axioms(&self) -> impl Iterator<Item = &Predicate<'_, '_, Self::Location>>;
+
+    /// Device-wide properties that admitted transitions must preserve.
+    /// These are argument-free Boolean predicates, separate from per-invocation
+    /// preconditions. Nucleus validates and proves the applicable obligations;
+    /// exposing a declaration does not establish its truth or native enforcement.
+    fn invariants(&self) -> impl Iterator<Item = &Predicate<'_, '_, Self::Location>>;
+}
